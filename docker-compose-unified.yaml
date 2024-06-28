@@ -109,7 +109,7 @@ services:
       - KAFKA_BROKERS=localhost:9092
       - KMS_LOCAL_ENDPOINT=http://local-kms:9981
       - OPENSEARCH_URL=http://opensearch:9200
-      - PINO_PRETTIFY="true"
+      - PINO_PRETTIFY=true
       - REDIS_URL=redis://redis-stack-server:6379
       - SUPERTOKENS_CONNECTION_URI=http://supertokens:3567
     ports:
