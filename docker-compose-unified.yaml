@@ -1,5 +1,4 @@
 version: '3'
-
 services:
   pezzo-clickhouse-migrate:
     image: ghcr.io/pezzolabs/pezzo/server:latest
@@ -15,9 +14,7 @@ services:
       CLICKHOUSE_USER: default
       CLICKHOUSE_PASSWORD: default
     depends_on:
-      - clickhouse:
-        condition: service_healthy
-
+      - clickhouse
   pezzo-prisma-migrate:
     image: ghcr.io/pezzolabs/pezzo/server:latest
     build:
@@ -28,9 +25,7 @@ services:
     environment:
       - DATABASE_URL=postgres://postgres:postgres@postgres:5432/pezzo
     depends_on:
-      postgres:
-        condition: service_healthy
-
+      - postgres
   clickhouse:
     image: clickhouse/clickhouse-server:23-alpine
     environment:
@@ -50,7 +45,6 @@ services:
       interval: 5s
       timeout: 5s
       retries: 3
-
   postgres:
     image: postgres:15-alpine3.17
     environment:
@@ -65,14 +59,12 @@ services:
       interval: 5s
       timeout: 5s
       retries: 3
-
   supertokens:
     image: supertokens/supertokens-postgresql:5.0
     ports:
       - "3567:3567"
     depends_on:
-      postgres:
-        condition: service_healthy
+      - postgres
     environment:
       POSTGRES_CONNECTION_URI: postgres://postgres:postgres@postgres:5432/supertokens
     healthcheck:
@@ -81,7 +73,6 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
-
   redis-stack-server:
     image: redis/redis-stack-server:7.2.0-v0
     container_name: redis-stack-server
@@ -92,7 +83,6 @@ services:
       interval: 1s
       timeout: 3s
       retries: 5
-
   local-kms:
     image: nsmithuk/local-kms:latest
     container_name: local-kms
@@ -106,7 +96,6 @@ services:
     environment:
       - "PORT=9981"
       - "KMS_REGION=us-east-1"
-
   pezzo-server:
     image: ghcr.io/pezzolabs/pezzo/server:latest
     build:
@@ -115,7 +104,6 @@ services:
     restart: always
     env_file:
       - ./.env
-      - ./.env.local
       - ./apps/server/.env
       - ./apps/server/.env.local
     environment:
@@ -127,18 +115,12 @@ services:
     ports:
       - "3000:3000"
     depends_on:
-      pezzo-prisma-migrate:
-        condition: service_completed_successfully
-      pezzo-clickhouse-migrate:
-        condition: service_completed_successfully
-      postgres:
-        condition: service_healthy
-      supertokens:
-        condition: service_healthy
-      clickhouse:
-        condition: service_healthy
-      redis-stack-server:
-        condition: service_healthy
+      - clickhouse
+      - pezzo-clickhouse-migrate
+      - pezzo-prisma-migrate
+      - postgres
+      - redis-stack-server
+      - supertokens
     healthcheck:
       test: ["CMD-SHELL", "curl 'http://pezzo-server:3000/api/healthz'"]
       interval: 10s
@@ -153,7 +135,6 @@ services:
         - traefik.http.services.pezzo-server.loadbalancer.server.port=3000
         - traefik.http.services.pezzo-server.loadbalancer.passHostHeader=true
         - traefik.http.routers.pezzo-server.service=pezzo-server
-
   pezzo-console:
     image: ghcr.io/pezzolabs/pezzo/console:latest
     build:
@@ -166,8 +147,7 @@ services:
     ports:
       - "4200:8080"
     depends_on:
-      pezzo-server:
-        condition: service_healthy
+      - pezzo-server
     deploy:
       labels:
         - traefik.enable=true
@@ -177,7 +157,6 @@ services:
         - traefik.http.services.pezzo-console.loadbalancer.server.port=4200
         - traefik.http.services.pezzo-console.loadbalancer.passHostHeader=true
         - traefik.http.routers.pezzo-console.service=pezzo-console
-
   pezzo-proxy:
     image: ghcr.io/pezzolabs/pezzo/proxy:latest
     build:
@@ -190,8 +169,7 @@ services:
     ports:
       - "3001:3000"
     depends_on:
-      pezzo-server:
-        condition: service_healthy
+      - pezzo-server
     deploy:
       labels:
         - traefik.enable=true
@@ -201,6 +179,5 @@ services:
         - traefik.http.services.pezzo-proxy.loadbalancer.server.port=3001
         - traefik.http.services.pezzo-proxy.loadbalancer.passHostHeader=true
         - traefik.http.routers.pezzo-proxy.service=pezzo-proxy
-
 volumes:
   postgres_data: ~
