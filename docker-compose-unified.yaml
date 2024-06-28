@@ -102,16 +102,16 @@ services:
       context: .
       dockerfile: ./apps/server/Dockerfile
     restart: always
-    env_file:
-      - ./.env
-      - ./apps/server/.env
-      - ./apps/server/.env.local
     environment:
-      - DATABASE_URL=postgres://postgres:postgres@postgres:5432/pezzo
-      - SUPERTOKENS_CONNECTION_URI=http://supertokens:3567
       - CLICKHOUSE_HOST=clickhouse
-      - REDIS_URL=redis://redis-stack-server:6379
+      - CONSOLE_HOST=http://pezzo-console:4200
+      - DATABASE_URL=postgres://postgres:postgres@postgres:5432/pezzo
+      - KAFKA_BROKERS=localhost:9092
       - KMS_LOCAL_ENDPOINT=http://local-kms:9981
+      - OPENSEARCH_URL=http://opensearch:9200
+      - PINO_PRETTIFY="true"
+      - REDIS_URL=redis://redis-stack-server:6379
+      - SUPERTOKENS_CONNECTION_URI=http://supertokens:3567
     ports:
       - "3000:3000"
     depends_on:
@@ -163,9 +163,11 @@ services:
       context: .
       dockerfile: ./apps/proxy/Dockerfile
     restart: always
-    env_file:
-      - ./.env
-      - ./apps/proxy/.env
+    environment:
+      - NX_BASE_API_URL=http://pezzo-server:3000
+      - NX_DEBUG_MODE="true"
+      - NX_SUPERTOKENS_API_DOMAIN=http://supertokens:3000
+      - NX_SUPERTOKENS_WEBSITE_DOMAIN=http://pezzo-console:4200
     ports:
       - "3001:3000"
     depends_on:
