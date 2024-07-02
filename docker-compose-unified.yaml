@@ -126,7 +126,7 @@ services:
       - clickhouse
       - redis-stack-server
     healthcheck:
-      test: ["CMD-SHELL", "curl 'http://pezzo-server:3000/api/healthz'"]
+      test: ["CMD-SHELL", "curl 'http://localhost:3000/api/healthz'"]
       interval: 10s
       timeout: 5s
       retries: 5
