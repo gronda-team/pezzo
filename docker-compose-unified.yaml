@@ -150,6 +150,7 @@ services:
     deploy:
       labels:
         - traefik.enable=true
+        - traefik.docker.network=traefik-public
         - traefik.http.routers.pezzo-server.rule=Host(`${PEZZO_SERVER_DOMAIN}`)
         - traefik.http.routers.pezzo-server.entrypoints=https
         - traefik.http.routers.pezzo-server.tls.certresolver=le
@@ -178,6 +179,7 @@ services:
     deploy:
       labels:
         - traefik.enable=true
+        - traefik.docker.network=traefik-public
         - traefik.http.routers.pezzo-console.rule=Host(`${PEZZO_CONSOLE_DOMAIN}`)
         - traefik.http.routers.pezzo-console.entrypoints=https
         - traefik.http.routers.pezzo-console.tls.certresolver=le
@@ -201,6 +203,7 @@ services:
     deploy:
       labels:
         - traefik.enable=true
+        - traefik.docker.network=traefik-public
         - traefik.http.routers.pezzo-proxy.rule=Host(`${PEZZO_PROXY_DOMAIN}`)
         - traefik.http.routers.pezzo-proxy.entrypoints=https
         - traefik.http.routers.pezzo-proxy.tls.certresolver=le
