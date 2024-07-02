@@ -218,3 +218,4 @@ networks:
     external: true
   pezzo-network:
     name: pezzo-network
+    external: false
