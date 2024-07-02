@@ -207,7 +207,7 @@ services:
         - traefik.http.routers.pezzo-proxy.rule=Host(`${PEZZO_PROXY_DOMAIN}`)
         - traefik.http.routers.pezzo-proxy.entrypoints=https
         - traefik.http.routers.pezzo-proxy.tls.certresolver=le
-        - traefik.http.services.pezzo-proxy.loadbalancer.server.port=3001
+        - traefik.http.services.pezzo-proxy.loadbalancer.server.port=3000
         - traefik.http.services.pezzo-proxy.loadbalancer.passHostHeader=true
         - traefik.http.routers.pezzo-proxy.service=pezzo-proxy
 
