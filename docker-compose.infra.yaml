@@ -14,8 +14,7 @@ services:
       CLICKHOUSE_USER: default
       CLICKHOUSE_PASSWORD: default
     depends_on:
-      clickhouse:
-        condition: service_healthy
+      - clickhouse
 
   pezzo-prisma-migrate:
     image: ghcr.io/pezzolabs/pezzo/server:latest
@@ -27,8 +26,7 @@ services:
     env_file:
       - ./.env.docker
     depends_on:
-      postgres:
-        condition: service_healthy
+      - postgres
 
   clickhouse:
     image: clickhouse/clickhouse-server:23-alpine
@@ -70,10 +68,7 @@ services:
     ports:
       - "3567:3567"
     depends_on:
-      postgres:
-        condition: service_healthy
-    env_file:
-      - ./.env.docker
+      - postgres
     environment:
       POSTGRES_CONNECTION_URI: "${SUPERTOKENS_DATABASE_URL}"
     healthcheck:
