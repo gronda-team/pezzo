@@ -165,9 +165,9 @@ services:
       dockerfile: ./apps/console/Dockerfile
     restart: always
     environment:
-      - NX_BASE_API_URL="http://pezzo-server:3000"
-      - NX_SUPERTOKENS_API_DOMAIN="http://pezzo-server:3000"
-      - NX_SUPERTOKENS_WEBSITE_DOMAIN="http://pezzo-console:8080"
+      - NX_BASE_API_URL=${PEZZO_SERVER_DOMAIN}
+      - NX_SUPERTOKENS_API_DOMAIN=${PEZZO_SERVER_DOMAIN}
+      - NX_SUPERTOKENS_WEBSITE_DOMAIN=${PEZZO_CONSOLE_DOMAIN}
       - NX_DEBUG_MODE="true"
     networks:
       - traefik-public
@@ -183,7 +183,7 @@ services:
         - traefik.http.routers.pezzo-console.rule=Host(`${PEZZO_CONSOLE_DOMAIN}`)
         - traefik.http.routers.pezzo-console.entrypoints=https
         - traefik.http.routers.pezzo-console.tls.certresolver=le
-        - traefik.http.services.pezzo-console.loadbalancer.server.port=4200
+        - traefik.http.services.pezzo-console.loadbalancer.server.port=8080
         - traefik.http.services.pezzo-console.loadbalancer.passHostHeader=true
         - traefik.http.routers.pezzo-console.service=pezzo-console
 
