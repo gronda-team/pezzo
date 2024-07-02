@@ -19,6 +19,8 @@ services:
       interval: 5s
       timeout: 5s
       retries: 3
+    networks:
+      - pezzo-network
 
   pezzo-clickhouse-migrate:
     image: ghcr.io/pezzolabs/pezzo/server:latest
@@ -33,6 +35,8 @@ services:
       CLICKHOUSE_PORT: "8123"
       CLICKHOUSE_USER: default
       CLICKHOUSE_PASSWORD: default
+    networks:
+      - pezzo-network
     depends_on:
       - clickhouse
 
@@ -45,6 +49,8 @@ services:
     command: -c "npx prisma migrate deploy"
     environment:
       - DATABASE_URL=postgres://postgres:postgres@postgres:5432/pezzo
+    networks:
+      - pezzo-network
     depends_on:
       - postgres
 
@@ -56,7 +62,9 @@ services:
     ports:
       - "5433:5432"
     volumes:
-      - postgres_data:/var/lib/postgresql/data
+      - pezzo_postgres_data:/var/lib/postgresql/data
+    networks:
+      - pezzo-network
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U postgres"]
       interval: 5s
@@ -71,6 +79,8 @@ services:
       - postgres
     environment:
       POSTGRES_CONNECTION_URI: postgres://postgres:postgres@postgres:5432/supertokens
+    networks:
+      - pezzo-network
     healthcheck:
       test: >
         bash -c 'exec 3<>/dev/tcp/127.0.0.1/3567 && echo -e "GET /hello HTTP/1.1\r\nhost: 127.0.0.1:3567\r\nConnection: close\r\n\r\n" >&3 && cat <&3 | grep "Hello"'
@@ -83,6 +93,8 @@ services:
     container_name: redis-stack-server
     ports:
       - "6379:6379"
+    networks:
+      - pezzo-network
     healthcheck:
       test: ["CMD-SHELL", "redis-cli ping | grep PONG"]
       interval: 1s
@@ -102,6 +114,8 @@ services:
     environment:
       - "PORT=9981"
       - "KMS_REGION=us-east-1"
+    networks:
+      - pezzo-network
 
   pezzo-server:
     image: ghcr.io/pezzolabs/pezzo/server:latest
@@ -116,6 +130,9 @@ services:
       - REDIS_URL=redis://redis-stack-server:6379
       - KMS_LOCAL_ENDPOINT=http://local-kms:9981
       - PINO_PRETTIFY=true
+    networks:
+      - traefik-public
+      - pezzo-network
     ports:
       - "3000:3000"
     depends_on:
@@ -151,6 +168,9 @@ services:
       - NX_SUPERTOKENS_API_DOMAIN="http://pezzo-server:3000"
       - NX_SUPERTOKENS_WEBSITE_DOMAIN="http://pezzo-console:8080"
       - NX_DEBUG_MODE="true"
+    networks:
+      - traefik-public
+      - pezzo-network
     ports:
       - "4200:8080"
     depends_on:
@@ -171,6 +191,9 @@ services:
       context: .
       dockerfile: ./apps/proxy/Dockerfile
     restart: always
+    networks:
+      - traefik-public
+      - pezzo-network
     ports:
       - "3001:3000"
     depends_on:
@@ -186,4 +209,12 @@ services:
         - traefik.http.routers.pezzo-proxy.service=pezzo-proxy
 
 volumes:
-  postgres_data: ~
+  pezzo_postgres_data:
+    external: true
+
+networks:
+  traefik-public:
+    name: traefik-public
+    external: true
+  pezzo-network:
+    name: pezzo-network
