@@ -1,5 +1,25 @@
 version: "3"
 services:
+  clickhouse:
+    image: clickhouse/clickhouse-server:23-alpine
+    environment:
+      CLICKHOUSE_USER: default
+      CLICKHOUSE_PASSWORD: default
+    volumes:
+      - ./volumes/clickhouse/data:/var/lib/clickhouse
+      - ./volumes/clickhouse/logs:/var/log/clickhouse-server
+      - ./clickhouse/config/users.d/config.xml:/etc/clickhouse-server/users.d/config.xml
+      - ./clickhouse/config/config.d/config.xml:/etc/clickhouse-server/config.d/config.xml
+    ports:
+      - "8123:8123"
+      - "9000:9000"
+      - "9004:9004"
+    healthcheck:
+      test: ["CMD-SHELL", 'clickhouse-client --query "SELECT 1"']
+      interval: 5s
+      timeout: 5s
+      retries: 3
+
   pezzo-clickhouse-migrate:
     image: ghcr.io/pezzolabs/pezzo/server:latest
     build:
@@ -27,26 +47,6 @@ services:
       - DATABASE_URL=postgres://postgres:postgres@postgres:5432/pezzo
     depends_on:
       - postgres
-
-  clickhouse:
-    image: clickhouse/clickhouse-server:23-alpine
-    environment:
-      CLICKHOUSE_USER: default
-      CLICKHOUSE_PASSWORD: default
-    volumes:
-      - ./volumes/clickhouse/data:/var/lib/clickhouse
-      - ./volumes/clickhouse/logs:/var/log/clickhouse-server
-      - ./clickhouse/config/users.d/config.xml:/etc/clickhouse-server/users.d/config.xml
-      - ./clickhouse/config/config.d/config.xml:/etc/clickhouse-server/config.d/config.xml
-    ports:
-      - "8123:8123"
-      - "9000:9000"
-      - "9004:9004"
-    healthcheck:
-      test: ["CMD-SHELL", 'clickhouse-client --query "SELECT 1"']
-      interval: 5s
-      timeout: 5s
-      retries: 3
 
   postgres:
     image: postgres:15-alpine3.17
