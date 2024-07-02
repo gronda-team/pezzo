@@ -22,18 +22,12 @@ services:
     ports:
       - "3000:3000"
     depends_on:
-      pezzo-prisma-migrate:
-        condition: service_completed_successfully
-      pezzo-clickhouse-migrate:
-        condition: service_completed_successfully
-      postgres:
-        condition: service_healthy
-      supertokens:
-        condition: service_healthy
-      clickhouse:
-        condition: service_healthy
-      redis-stack-server:
-        condition: service_healthy
+      - pezzo-prisma-migrate
+      - pezzo-clickhouse-migrate
+      - postgres
+      - supertokens
+      - clickhouse
+      - redis-stack-server
     healthcheck:
       test: ["CMD-SHELL", "curl 'http://pezzo-server:3000/api/healthz'"]
       interval: 10s
@@ -52,8 +46,7 @@ services:
     ports:
       - "4200:8080"
     depends_on:
-      pezzo-server:
-        condition: service_healthy
+      - pezzo-server
 
   pezzo-proxy:
     image: ghcr.io/pezzolabs/pezzo/proxy:latest
@@ -67,5 +60,4 @@ services:
     ports:
       - "3001:3000"
     depends_on:
-      pezzo-server:
-        condition: service_healthy
+      - pezzo-server
