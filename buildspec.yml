@@ -1,6 +1,7 @@
 version: 0.2
 env:
   variables:
+    DOCKERFILE: './apps/console/Dockerfile'
     IMAGE_REPO_NAME: 'gronda/pezzo-console'
     IMAGE_TAG: 'latest'
   secrets-manager:
@@ -21,7 +22,7 @@ phases:
       - npx nx graphql:generate --skip-nx-cache
       - npx nx run-many --target=build --all --parallel --maxParallel=3
       - echo Building the Docker image...
-      - docker build -t $IMAGE_REPO_NAME:$IMAGE_TAG ./apps/console/Dockerfile
+      - docker build -f $DOCKERFILE -t $IMAGE_REPO_NAME:$IMAGE_TAG .
       - docker tag $IMAGE_REPO_NAME:$IMAGE_TAG $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/$IMAGE_REPO_NAME:$IMAGE_TAG
   post_build:
     commands:
