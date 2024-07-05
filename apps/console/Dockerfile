@@ -1,5 +1,5 @@
 FROM nginx:1.20-alpine
-LABEL org.opencontainers.image.source https://github.com/pezzolabs/pezzo
+LABEL org.opencontainers.image.source https://github.com/gronda-team/pezzo
 
 RUN apk add --update nodejs
 
