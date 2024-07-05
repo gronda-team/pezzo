@@ -10,6 +10,7 @@ services:
       - /mnt/pezzo/volumes/clickhouse/logs:/var/log/clickhouse-server
       - /mnt/pezzo/clickhouse/config/users.d/config.xml:/etc/clickhouse-server/users.d/config.xml
       - /mnt/pezzo/clickhouse/config/config.d/config.xml:/etc/clickhouse-server/config.d/config.xml
+      - /mnt/pezzo/clickhouse/config/users.d/date_time_input_format.xml:/etc/clickhouse-server/users.d/date_time_input_format.xml
     ports:
       - "8123:8123"
       - "9000:9000"
@@ -176,6 +177,8 @@ services:
       - "4200:8080"
     depends_on:
       - pezzo-server
+    volumes:
+      - /root/.htpasswd:/passwd/.htpasswd
     deploy:
       labels:
         - traefik.enable=true
@@ -186,6 +189,8 @@ services:
         - traefik.http.services.pezzo-console.loadbalancer.server.port=8080
         - traefik.http.services.pezzo-console.loadbalancer.passHostHeader=true
         - traefik.http.routers.pezzo-console.service=pezzo-console
+        - traefik.http.middlewares.api-users.basicauth.usersfile=/passwd/.htpasswd
+        - traefik.http.routers.pezzo-console.middlewares=api-users
 
   pezzo-proxy:
     image: ghcr.io/pezzolabs/pezzo/proxy:latest
