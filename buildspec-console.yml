@@ -1,0 +1,23 @@
+version: 0.2
+env:
+  variables:
+    IMAGE_REPO_NAME: 'gronda/pezzo-console'
+    IMAGE_TAG: 'latest'
+  secrets-manager:
+    PACKAGE_READER_GITHUB_TOKEN: "devops/build:PACKAGE_READER_GITHUB_TOKEN"
+phases:
+  pre_build:
+    commands:
+      - echo Logging in to Amazon ECR...
+      - aws ecr get-login-password --region $AWS_DEFAULT_REGION | docker login --username AWS --password-stdin $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com
+      - echo Adding NPM token to .npmrc...
+      - echo "//npm.pkg.github.com/:_authToken=${PACKAGE_READER_GITHUB_TOKEN}" >> .npmrc
+  build:
+    commands:
+      - echo Building the Docker image...
+      - docker build -t $IMAGE_REPO_NAME:$IMAGE_TAG .
+      - docker tag $IMAGE_REPO_NAME:$IMAGE_TAG $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/$IMAGE_REPO_NAME:$IMAGE_TAG
+  post_build:
+    commands:
+      - echo Pushing the Docker image...
+      - docker push $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/$IMAGE_REPO_NAME:$IMAGE_TAG
