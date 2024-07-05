@@ -20,7 +20,6 @@ phases:
   build:
     commands:
       - npm ci
-      - codebuild-breakpoint
       - npx nx graphql:generate --skip-nx-cache
       - npx nx run-many --target=build --all --parallel --maxParallel=3 --verbose --skip-nx-cache
       - echo Building the Docker image...
