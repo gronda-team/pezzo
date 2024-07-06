@@ -20,15 +20,15 @@ phases:
   build:
     commands:
       - npm ci
-      - npx nx graphql:generate --skip-nx-cache
-      - npx nx run-many --target=build --all --parallel --maxParallel=3 --verbose --skip-nx-cache
-      - echo Building the Docker image...
-      - docker build -f $DOCKERFILE -t $IMAGE_REPO_NAME:$IMAGE_TAG .
-      - docker tag $IMAGE_REPO_NAME:$IMAGE_TAG $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/$IMAGE_REPO_NAME:$IMAGE_TAG
-  post_build:
-    commands:
-      - echo Pushing the Docker image...
-      - docker push $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/$IMAGE_REPO_NAME:$IMAGE_TAG
+      # - npx nx graphql:generate --skip-nx-cache
+      # - npx nx run-many --target=build --all --parallel --maxParallel=3 --verbose --skip-nx-cache
+      # - echo Building the Docker image...
+      # - docker build -f $DOCKERFILE -t $IMAGE_REPO_NAME:$IMAGE_TAG .
+      # - docker tag $IMAGE_REPO_NAME:$IMAGE_TAG $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/$IMAGE_REPO_NAME:$IMAGE_TAG
+  # post_build:
+  #   commands:
+  #     - echo Pushing the Docker image...
+  #     - docker push $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/$IMAGE_REPO_NAME:$IMAGE_TAG
 cache:
   paths:
     - 'node_modules/**/*'
