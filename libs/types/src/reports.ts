@@ -26,12 +26,14 @@ export interface ReportSchema {
   cacheEnabled: boolean;
   cacheHit: boolean;
   promptId: string;
+  properties?: string;
 }
 
 export interface SerializedReport
-  extends Omit<ReportSchema, "requestBody" | "responseBody"> {
+  extends Omit<ReportSchema, "requestBody" | "responseBody" | "properties"> {
   requestBody: Record<string, any>;
   responseBody: Record<string, any>;
+  properties?: Record<string, any>;
 }
 
 export const serializeReport = (doc: ReportSchema): SerializedReport => {
@@ -39,6 +41,7 @@ export const serializeReport = (doc: ReportSchema): SerializedReport => {
     ...doc,
     requestBody: JSON.parse(doc.requestBody),
     responseBody: JSON.parse(doc.responseBody),
+    properties: doc.properties ? JSON.parse(doc.properties) : null,
   };
 };
 
@@ -56,14 +59,18 @@ export interface PaginatedReportsSchema {
   cacheEnabled: boolean;
   cacheHit: boolean;
   promptId: string;
+  properties?: string;
 }
 
-export type SerializedPaginatedReport = PaginatedReportsSchema;
+export type SerializedPaginatedReport = Omit<PaginatedReportsSchema, "properties"> & {
+  properties?: Record<string, any>;
+}
 
 export const serializePaginatedReport = (
   doc: PaginatedReportsSchema
 ): SerializedPaginatedReport => {
   return {
     ...doc,
+    properties: doc.properties ? JSON.parse(doc.properties) : null,
   };
 };

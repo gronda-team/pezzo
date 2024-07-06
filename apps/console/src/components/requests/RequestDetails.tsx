@@ -91,6 +91,19 @@ export const RequestDetails = (props: Props) => {
       description: report.id,
     },
     {
+      title: "Properties",
+      description: (
+        <div className="font-mono">
+          {report.properties && Object.keys(report.properties).map((key) => (
+            <div key={key} className="flex justify-between gap-4">
+              <span className="font-semibold">{key}:</span>
+              <span>{report.properties[key]}</span>
+            </div>
+          ))}
+        </div>
+      ),
+    },
+    {
       title: "Cache",
       description: (
         <div className="flex gap-1">
