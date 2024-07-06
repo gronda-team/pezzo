@@ -37,7 +37,7 @@ export class ReportingService {
     const reportId = randomUUID();
     const { report, calculated } = buildRequestReport(dto);
 
-    const { metadata, request, response, cacheEnabled, cacheHit } = report;
+    const { metadata, properties, request, response, cacheEnabled, cacheHit } = report;
 
     const reportToSave: ReportSchema = {
       id: reportId,
@@ -67,6 +67,7 @@ export class ReportingService {
       cacheEnabled: cacheEnabled,
       cacheHit: cacheHit,
       promptId: report.metadata.promptId || null,
+      properties: properties ? JSON.stringify(properties) : null,
     };
 
     try {
@@ -138,6 +139,7 @@ export class ReportingService {
         totalCost: "totalCost",
         cacheEnabled: "cacheEnabled",
         cacheHit: "cacheHit",
+        properties: "properties",
       })
       .from("reports");
 
@@ -154,8 +156,13 @@ export class ReportingService {
           value = knex.raw(`parseDateTimeBestEffort('${d}')`) as any;
         }
 
+        if (filter.field.startsWith('properties')) {
+          const key = filter.field.split('.')[1];
+          field = knex.raw(`JSONExtractString(properties, '${key}')`) as any;
+        }
+
         if (filter.operator === "like") {
-          field = knex.raw(`lower(${filter.field})`) as any;
+          field = knex.raw(`lower(${field})`) as any;
           value = (value as string).toLowerCase();
         }
 

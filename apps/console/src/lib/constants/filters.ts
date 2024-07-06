@@ -36,6 +36,11 @@ export const FILTER_FIELDS_LIST: FilterDefinition[] = [
     type: "number",
     label: "Total Tokens",
   },
+  {
+    value: "property",
+    type: "string",
+    label: "Custom Property",
+  },
 ];
 
 export const NUMBER_FILTER_OPERATORS: { value: string; label: string }[] = [
