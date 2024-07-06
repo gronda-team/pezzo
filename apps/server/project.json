@@ -70,7 +70,7 @@
       }
     },
     "prebuild": {
-      "dependsOn": ["prisma:generate"],
+      "dependsOn": ["prisma:generate", "graphql:generate"],
       "executor": "nx:noop"
     },
     "prisma:generate": {
