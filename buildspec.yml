@@ -19,7 +19,7 @@ phases:
       - echo "//npm.pkg.github.com/:_authToken=${PACKAGE_READER_GITHUB_TOKEN}" >> .npmrc
   build:
     commands:
-      - npm ci
+      - npm ci --force
       - npx nx graphql:generate --skip-nx-cache
       - npx nx run-many --target=build --all --parallel --maxParallel=3
       - echo Building the Docker image...
