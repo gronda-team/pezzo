@@ -69,10 +69,6 @@
         }
       }
     },
-    "prebuild": {
-      "dependsOn": ["prisma:generate"],
-      "executor": "nx:noop"
-    },
     "prisma:generate": {
       "command": "npx prisma generate --schema apps/server/prisma/schema.prisma",
       "inputs": ["{projectRoot}/prisma/schema.prisma"],

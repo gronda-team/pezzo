@@ -6,7 +6,6 @@
   "implicitDependencies": ["pezzo"],
   "targets": {
     "build": {
-      "dependsOn": ["^graphql:generate", "^prebuild"],
       "executor": "@nx/webpack:webpack",
       "outputs": ["{options.outputPath}"],
       "defaultConfiguration": "production",
