@@ -1,8 +1,6 @@
 version: 0.2
 env:
   variables:
-    DOCKERFILE: './apps/console/Dockerfile'
-    IMAGE_REPO_NAME: 'gronda/pezzo-console'
     IMAGE_TAG: 'latest'
     GITHUB_ACTIONS: 'true'
   secrets-manager:
@@ -23,12 +21,15 @@ phases:
       - npx nx graphql:generate --skip-nx-cache
       - npx nx run-many --target=build --all --parallel --maxParallel=3
       - echo Building the Docker image...
-      - docker build -f $DOCKERFILE -t $IMAGE_REPO_NAME:$IMAGE_TAG .
-      - docker tag $IMAGE_REPO_NAME:$IMAGE_TAG $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/$IMAGE_REPO_NAME:$IMAGE_TAG
+      - docker build -f ./apps/console/Dockerfile -t gronda/pezzo-console:$IMAGE_TAG .
+      - docker build -f ./apps/server/Dockerfile -t gronda/pezzo-server:$IMAGE_TAG .
+      - docker tag gronda/pezzo-console:$IMAGE_TAG $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/gronda/pezzo-console:$IMAGE_TAG
+      - docker tag gronda/pezzo-server:$IMAGE_TAG $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/gronda/pezzo-server:$IMAGE_TAG
   post_build:
     commands:
       - echo Pushing the Docker image...
-      - docker push $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/$IMAGE_REPO_NAME:$IMAGE_TAG
+      - docker push $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/gronda/pezzo-console:$IMAGE_TAG
+      - docker push $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/gronda/pezzo-server:$IMAGE_TAG
 cache:
   paths:
     - 'node_modules/**/*'
