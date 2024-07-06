@@ -8,6 +8,8 @@ WORKDIR /app
 
 COPY ./dist/apps/server/package*.json ./
 
+COPY ./apps/server/entrypoint.sh ./
+
 RUN npm i --omit=dev
 
 COPY ./dist/apps/server .
@@ -16,9 +18,11 @@ RUN npx prisma generate
 
 COPY ./clickhouse ./clickhouse
 
-RUN cd clickhouse && npm i && npx knex migrate:latest 
+RUN cd clickhouse && npm i
+
+RUN chmod +x entrypoint.sh
 
 ENV PORT=3000
 EXPOSE $PORT
 
-ENTRYPOINT ["node", "main.js"]
+ENTRYPOINT ["entrypoint.sh"]
