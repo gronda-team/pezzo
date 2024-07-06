@@ -16,7 +16,7 @@ RUN npx prisma generate
 
 COPY ./clickhouse ./clickhouse
 
-RUN cd clickhouse && npm i
+RUN cd clickhouse && npm i && npx knex migrate:latest 
 
 ENV PORT=3000
 EXPOSE $PORT
