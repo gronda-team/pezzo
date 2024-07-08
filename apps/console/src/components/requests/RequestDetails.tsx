@@ -97,7 +97,7 @@ export const RequestDetails = (props: Props) => {
           {report.properties && Object.keys(report.properties).map((key) => (
             <div key={key} className="flex justify-between gap-4">
               <span className="font-semibold">{key}:</span>
-              <span>{report.properties[key]}</span>
+              <span>{report.properties[key]?.substring(0, 25) || ''}</span>
             </div>
           ))}
         </div>
