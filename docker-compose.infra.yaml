@@ -1,25 +1,5 @@
 version: "3"
 services:
-  clickhouse:
-    image: clickhouse/clickhouse-server:23-alpine
-    environment:
-      CLICKHOUSE_USER: default
-      CLICKHOUSE_PASSWORD: default
-    volumes:
-      - /mnt/pezzo/volumes/clickhouse/data:/var/lib/clickhouse
-      - /mnt/pezzo/volumes/clickhouse/logs:/var/log/clickhouse-server
-      - /mnt/pezzo/clickhouse/config/users.d/config.xml:/etc/clickhouse-server/users.d/config.xml
-      - /mnt/pezzo/clickhouse/config/config.d/config.xml:/etc/clickhouse-server/config.d/config.xml
-    ports:
-      - "8123:8123"
-      - "9000:9000"
-      - "9004:9004"
-    healthcheck:
-      test: ["CMD-SHELL", 'clickhouse-client --query "SELECT 1"']
-      interval: 5s
-      timeout: 5s
-      retries: 3
-
   pezzo-clickhouse-migrate:
     image: ghcr.io/pezzolabs/pezzo/server:latest
     build:
@@ -34,7 +14,8 @@ services:
       CLICKHOUSE_USER: default
       CLICKHOUSE_PASSWORD: default
     depends_on:
-      - clickhouse
+      clickhouse:
+        condition: service_healthy
 
   pezzo-prisma-migrate:
     image: ghcr.io/pezzolabs/pezzo/server:latest
@@ -43,10 +24,32 @@ services:
       dockerfile: ./apps/server/Dockerfile
     entrypoint: /bin/sh
     command: -c "npx prisma migrate deploy"
-    env_file:
-      - ./.env.docker
+    environment:
+      - DATABASE_URL=postgres://postgres:postgres@postgres:5432/pezzo
     depends_on:
-      - postgres
+      postgres:
+        condition: service_healthy
+
+  clickhouse:
+    image: clickhouse/clickhouse-server:23-alpine
+    environment:
+      CLICKHOUSE_USER: default
+      CLICKHOUSE_PASSWORD: default
+    volumes:
+      - ./volumes/clickhouse/data:/var/lib/clickhouse
+      - ./volumes/clickhouse/logs:/var/log/clickhouse-server
+      - ./clickhouse/config/users.d/config.xml:/etc/clickhouse-server/users.d/config.xml
+      - ./clickhouse/config/users.d/date_time_input_format.xml:/etc/clickhouse-server/users.d/date_time_input_format.xml
+      - ./clickhouse/config/config.d/config.xml:/etc/clickhouse-server/config.d/config.xml
+    ports:
+      - "8123:8123"
+      - "9000:9000"
+      - "9004:9004"
+    healthcheck:
+      test: ["CMD-SHELL", 'clickhouse-client --query "SELECT 1"']
+      interval: 5s
+      timeout: 5s
+      retries: 3
 
   postgres:
     image: postgres:15-alpine3.17
@@ -68,9 +71,10 @@ services:
     ports:
       - "3567:3567"
     depends_on:
-      - postgres
+      postgres:
+        condition: service_healthy
     environment:
-      POSTGRES_CONNECTION_URI: "${SUPERTOKENS_DATABASE_URL}"
+      POSTGRES_CONNECTION_URI: postgres://postgres:postgres@postgres:5432/supertokens
     healthcheck:
       test: >
         bash -c 'exec 3<>/dev/tcp/127.0.0.1/3567 && echo -e "GET /hello HTTP/1.1\r\nhost: 127.0.0.1:3567\r\nConnection: close\r\n\r\n" >&3 && cat <&3 | grep "Hello"'
