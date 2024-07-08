@@ -1,4 +1,4 @@
-FROM node:18.12-slim AS base
+FROM 395627044402.dkr.ecr.eu-west-1.amazonaws.com/gronda/base/node:18.12-slim AS base
 LABEL org.opencontainers.image.source https://github.com/gronda-team/pezzo
 
 RUN apt-get update
