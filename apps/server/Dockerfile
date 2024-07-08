@@ -18,11 +18,11 @@ RUN npx prisma generate
 
 COPY ./clickhouse ./clickhouse
 
-RUN cd clickhouse && npm i
+RUN cd clickhouse && npm i && cd -
 
 RUN chmod +x entrypoint.sh
 
 ENV PORT=3000
 EXPOSE $PORT
 
-ENTRYPOINT ["entrypoint.sh"]
+ENTRYPOINT ["./entrypoint.sh"]

@@ -1,3 +1,3 @@
 #!/bin/bash
-npx knex migrate:latest
+cd ./clickhouse && npx knex migrate:latest || cd -
 node main.js
