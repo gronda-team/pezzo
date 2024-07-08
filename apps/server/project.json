@@ -21,6 +21,11 @@
             "glob": "prisma",
             "input": "apps/server",
             "output": "prisma"
+          },
+          {
+            "glob": "**/*",
+            "input": "apps/server/scripts",
+            "output": "scripts"
           }
         ],
         "isolatedConfig": false,

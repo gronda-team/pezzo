@@ -8,8 +8,6 @@ WORKDIR /app
 
 COPY ./dist/apps/server/package*.json ./
 
-COPY ./apps/server/entrypoint.sh ./
-
 RUN npm i --omit=dev
 
 COPY ./dist/apps/server .
@@ -20,9 +18,10 @@ COPY ./clickhouse ./clickhouse
 
 RUN cd clickhouse && npm i && cd -
 
-RUN chmod +x entrypoint.sh
+RUN chmod +x scripts/entrypoint.sh
 
 ENV PORT=3000
 EXPOSE $PORT
 
-ENTRYPOINT ["./entrypoint.sh"]
+ENTRYPOINT ["./scripts/entrypoint.sh"]
+CMD ["node", "main.js"]
