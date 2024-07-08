@@ -1,4 +1,5 @@
 #!/bin/sh
 set -e;
-cd ./clickhouse && npx knex migrate:latest || cd -;
+cd ./clickhouse && npx knex migrate:latest;
+cd -;
 exec "$@";
