@@ -1,6 +1,6 @@
 import { CreateReportDto } from "../dto/create-report.dto";
 import { Provider } from "@pezzo/types";
-import { OpenAIToolkit } from "@pezzo/llm-toolkit";
+import { OpenAIToolkit } from "@gronda-team/llm-toolkit";
 
 export const buildRequestReport = (dto: CreateReportDto) => {
   const requestTimestamp = new Date(dto.request.timestamp);
