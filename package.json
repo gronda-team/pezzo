@@ -17,7 +17,7 @@
     "@aws-sdk/client-kms": "^3.410.0",
     "@clickhouse/client": "^0.2.7",
     "@dqbd/tiktoken": "^1.0.6",
-    "@gronda-team/llm-toolkit": "^0.0.2",
+    "@gronda-team/llm-toolkit": "^1.0.2",
     "@hookform/resolvers": "^3.3.1",
     "@nestjs/apollo": "^11.0.6",
     "@nestjs/common": "^9.0.0",
