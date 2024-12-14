@@ -1,4 +1,4 @@
-import { OpenAIToolkit } from "@pezzo/llm-toolkit";
+import { OpenAIToolkit } from "@gronda-team/llm-toolkit";
 import { Provider } from "./provider.types";
 import { Type } from "class-transformer";
 import { AllPrimitiveTypes, Primitive, RecursiveObject } from "./ts-helpers";

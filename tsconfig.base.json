@@ -21,6 +21,7 @@
       "@pezzo/types": ["libs/types/src/index.ts"],
       "@pezzo/ui": ["libs/ui/src/index.ts"],
       "@pezzo/ui/*": ["libs/ui/src/*"],
+      "@gronda-team/llm-toolkit": ["node_modules/@gronda-team/llm-toolkit/main.ts"],
       "~/*": ["apps/console/src/*"]
     }
   },

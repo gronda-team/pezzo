@@ -1,6 +1,6 @@
 import OpenAI from "openai";
 import { FormSchema, ProviderSettingsDefinition } from "../types";
-import { OpenAIToolkit } from "@pezzo/llm-toolkit";
+import { OpenAIToolkit } from "@gronda-team/llm-toolkit";
 
 const { gptModels } = OpenAIToolkit;
 
