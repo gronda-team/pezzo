@@ -21,9 +21,9 @@ phases:
       - npx nx graphql:generate --skip-nx-cache
       - npx nx run-many --target=build --all --parallel --maxParallel=3
       - cp .npmrc ./dist/.npmrc
-      - cp .npmrc ./dist/console/.npmrc
-      - cp .npmrc ./dist/proxy/.npmrc
-      - cp .npmrc ./dist/server/.npmrc
+      - cp .npmrc ./dist/apps/console/.npmrc
+      - cp .npmrc ./dist/apps/proxy/.npmrc
+      - cp .npmrc ./dist/apps/server/.npmrc
       - echo Building the Docker image...
       - docker build -f ./apps/console/Dockerfile -t gronda/pezzo-console:$IMAGE_TAG .
       - docker build -f ./apps/server/Dockerfile -t gronda/pezzo-server:$IMAGE_TAG .
