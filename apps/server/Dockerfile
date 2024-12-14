@@ -6,6 +6,7 @@ RUN apt-get install -y openssl curl
 
 WORKDIR /app
 
+COPY ./dist/.npmrc .
 COPY ./dist/apps/server/package*.json ./
 
 RUN npm i --omit=dev

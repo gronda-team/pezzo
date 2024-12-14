@@ -5,6 +5,7 @@ RUN apk update
 
 WORKDIR /app
 
+COPY ./dist/.npmrc .
 COPY ./dist/apps/proxy/package*.json ./
 
 RUN npm i --omit=dev
